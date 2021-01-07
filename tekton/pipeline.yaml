@@ -1,0 +1,37 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: tekton-demo
+spec:
+  params:
+    - name: BUILDER_IMAGE
+      description: The image on which builds will run
+      default: saripurigopi/dind-kind:latest 
+    - name: SCRIPT_LOCATION
+      description: The location of the kubernetes actions metadata file location
+      default: https://github.com/saripurigopi/tekton-demo/tekton/dind-kind.yaml
+  resources:
+    - name: source
+      type: git
+  tasks:
+    - name: deploy
+      taskRef:
+        name: kubernetes-actions
+      params:
+        - name: script
+          value: "kubectl"
+      params:
+        - name: args
+          value: ["apply", "-f", "$(params.SCRIPT_LOCATION)"]
+      resources:
+        inputs:
+          - name: source
+            resource: source
+    - name: status
+      runAfter: [status]
+      taskRef:
+        name: deploy-status
+      resources:
+        inputs:
+          - name: source
+            resource: source

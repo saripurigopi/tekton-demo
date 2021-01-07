@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: deploy-status
+spec:
+  inputs:
+    resources:
+    - name: source
+      type: git
+  steps:
+  - name: apply-config
+    image: lachlanevenson/k8s-kubectl
+    workingDir: /workspace/source
+    command: ['kubectl']
+    args:
+    - get
+    - pods
+    - -A
+    - -o
+    - wide
