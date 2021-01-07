@@ -28,7 +28,7 @@ spec:
           - name: source
             resource: source
     - name: status
-      runAfter: [status]
+      runAfter: [deploy]
       taskRef:
         name: deploy-status
       resources:
