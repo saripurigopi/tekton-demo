@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   imagePullSecrets:
-    - name: regcred
+  - name: regcred
   - image: saripurigopi/dind-kind:latest
     imagePullPolicy: Always
     name: kind-cluster
