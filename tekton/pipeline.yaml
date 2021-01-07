@@ -3,10 +3,15 @@ kind: Pipeline
 metadata:
   name: tekton-demo
 spec:
+  workspaces:
+    - name: manifests-dir
+      optional: true
+    - name: kubeconfig-dir
+      optional: true
   params:
     - name: BUILDER_IMAGE
       description: The image on which builds will run
-      default: saripurigopi/dind-kind:latest 
+      default: saripurigopi/dind-kind:latest
     - name: SCRIPT_LOCATION
       description: The location of the kubernetes actions metadata file location
       default: https://github.com/saripurigopi/tekton-demo/tekton/dind-kind.yaml
@@ -17,17 +22,16 @@ spec:
     - name: deploy
       taskRef:
         name: kubernetes-actions
+      workspaces:
+        - name: manifests-dir
+          workspace: manifests-dir
+        - name: kubeconfig-dir
+          workspace: kubeconfig-dir
       params:
         - name: script
-          value: "kubectl"
-      params:
-        - name: args
-          value: ["apply", "-f", "$(params.SCRIPT_LOCATION)"]
-      resources:
-        inputs:
-          - name: source
-            resource: source
-    - name: status
+          value: |
+              kubectl apply -f https://github.com/saripurigopi/tekton-demo/tekton/dind-kind.yaml
+    - name: result
       runAfter: [deploy]
       taskRef:
         name: deploy-status
