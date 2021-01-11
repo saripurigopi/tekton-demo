@@ -4,8 +4,6 @@ metadata:
   name: kind-cluster
 spec:
   containers:
-  imagePullSecrets:
-    - name: regcred
   - image: saripurigopi/dind-kind:latest
     imagePullPolicy: Always
     name: kind-cluster
@@ -40,6 +38,8 @@ spec:
       periodSeconds: 20
       successThreshold: 1
       timeoutSeconds: 1
+  imagePullSecrets:
+  - name: regcred
   volumes:
   - name: varlibdocker
     emptyDir: {}
